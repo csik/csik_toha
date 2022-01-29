@@ -234,13 +234,35 @@ var projectCards;
     }
 
     function singleColumnRow(gallery, entries, i) {
+
+      let entry0 = document.createElement("div");
+      entry0.classList.add("col-3", "m-0", "p-0");
+      gallery.appendChild(entry0);
+
       let entry1 = document.createElement("div");
-      entry1.classList.add("col-12", "m-0", "p-0");
+      entry1.classList.add("col-6", "m-0", "p-0");
       entry1.appendChild(entries[i].cloneNode(true));
       entry1.children[0].classList.add("img-type-1");
       gallery.appendChild(entry1);
       i++;
     }
+   const xah_randomize_children_f = ((nodeX) => {
+    // nodeX can be any html element
+    // randomize its children
+    // http://xahlee.info/js/js_dom_randomize_list.html
+    // version 2017-05-11
+
+    const newNode = nodeX.cloneNode(true);
+    const xChildren = newNode.children;
+    const newNodeFrag = document.createDocumentFragment();
+
+    while (xChildren.length > 0) {
+        newNodeFrag.appendChild( xChildren [Math.floor(Math.random() * xChildren.length)] );
+    };
+
+    nodeX.innerHTML = "";
+    nodeX.appendChild(newNodeFrag);
+});
 
     function showAchievements() {
       // show achievements from achievements-holder div
@@ -249,45 +271,29 @@ var projectCards;
         return
       }
       gallery.innerHTML = "";
+      xah_randomize_children_f(document.getElementById("achievements-holder"));
       const entries = document.getElementById("achievements-holder").children;
+      // const entries = randomArrayShuffle(initial_entries);
       let len = entries.length;
       let i = 0;
       let rowNumber = 1;
       while (i < len) {
-        if (isLaptop) {
-          if (i + 4 <= len) {
-            if (rowNumber % 2) {
-              fourColumRow(gallery, entries, i);
-            } else {
-              fourColumnReversedRow(gallery, entries, i);
-            }
-            i += 4;
-
-          } else if (i + 3 <= len) {
-            if (rowNumber % 2) {
-              threeColumnRow(gallery, entries, i);
-            } else {
-              threeColumnReversedRow(gallery, entries, i);
-            }
-            i += 3;
-          } else if (i + 2 <= len) {
-            twoColumnRow(gallery, entries, i);
-            i += 2;
-          } else {
-            singleColumnRow(gallery, entries, i);
-            i++;
-          }
-        } else if (isTablet) {
+        if (isLaptop){
+            if (i + 2 <= len) {
+                twoColumnRow(gallery, entries, i);
+                i += 2;
+              } else {
+                singleColumnRow(gallery, entries, i);
+                i++;
+              }
+         } else if (isTablet) {
           if (i + 2 <= len) {
-            twoColumnRow(gallery, entries, i);
-            i += 2;
-          } else {
-            singleColumnRow(gallery, entries, i);
-            i++;
-          }
-        } else {
-          singleColumnRow(gallery, entries, i);
-          i++;
+                twoColumnRow(gallery, entries, i);
+                i += 2;
+              } else {
+                singleColumnRow(gallery, entries, i);
+                i++;
+              }
         }
         rowNumber++;
       }
